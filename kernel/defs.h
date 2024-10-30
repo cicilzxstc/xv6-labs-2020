@@ -181,6 +181,10 @@ int             copyinstr(pagetable_t, char *, uint64, uint64);
 int             vmprint(pagetable_t pagetable);         //打印页表内容函数声明
 pagetable_t     kvminit_newpgtbl();                     //声明新函数
 void            kvm_free_kernelpgtbl(pagetable_t);      //声明新函数
+int kvmcopymappings(pagetable_t src, pagetable_t dst, uint64 start, uint64 sz);     //声明新函数
+uint64 kvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz);       //声明新函数
+int copyin_new(pagetable_t pagetable, char *dst, uint64 srcva, uint64 len);        //声明新函数
+int copyinstr_new(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max);     //声明新函数
 
 // plic.c
 void            plicinit(void);
