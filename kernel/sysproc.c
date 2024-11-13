@@ -97,3 +97,31 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+
+uint64
+sys_sigreturn(void)
+{
+  struct proc *p = myproc();
+  if (p->alarm_on)
+  {
+    *p->trapframe = *p->pre_trap_frame;
+    p->alarm_past = 0;
+    p->alarm_on = 0;
+  }
+  return p->trapframe->a0;
+}
+
+
+uint64
+sys_sigalarm(void)
+{
+  struct proc *p = myproc();
+  // 从用户空间获取参数并存储到proc
+  argint(0, &p->alarm_ticks);
+  argaddr(1, (uint64*)&p->alarm_handler);
+  p->alarm_past = 0; // 重置alarm_past
+
+
+  return 0;
+}

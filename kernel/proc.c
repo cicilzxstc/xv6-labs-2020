@@ -90,7 +90,7 @@ allocpid() {
 // and return with p->lock held.
 // If there are no free procs, or a memory allocation fails, return 0.
 static struct proc*
-allocproc(void)
+allocproc(void)     //初始化进程
 {
   struct proc *p;
 
@@ -107,8 +107,18 @@ allocproc(void)
 found:
   p->pid = allocpid();
 
+  p->alarm_past = 0;
+  p->alarm_ticks = 0;
+  p->alarm_handler = (void*)0;
+
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+    release(&p->lock);
+    return 0;
+  }
+
+  if((p ->pre_trap_frame = (struct trapframe*)kalloc())==0){
+    freeproc(p);
     release(&p->lock);
     return 0;
   }
@@ -134,7 +144,7 @@ found:
 // including user pages.
 // p->lock must be held.
 static void
-freeproc(struct proc *p)
+freeproc(struct proc *p)      //释放进程中的资源
 {
   if(p->trapframe)
     kfree((void*)p->trapframe);
@@ -142,6 +152,9 @@ freeproc(struct proc *p)
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
+  if(p->pre_trap_frame)
+    kfree((void*)p->pre_trap_frame);
+  p->pre_trap_frame=0;
   p->sz = 0;
   p->pid = 0;
   p->parent = 0;

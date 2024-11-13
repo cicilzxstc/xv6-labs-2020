@@ -104,6 +104,8 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
+extern uint64 sys_sigalarm(void); // 全局声明sigalarm系统调用处理函数
+extern uint64 sys_sigreturn(void);// 全局声明sigreturn系统调用处理函数
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -127,6 +129,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_sigalarm] sys_sigalarm, // 系统调用号与处理函数关联
+[SYS_sigreturn] sys_sigreturn, // 系统调用号与处理函数关联
 };
 
 void
