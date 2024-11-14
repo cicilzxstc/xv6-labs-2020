@@ -81,7 +81,7 @@ struct trapframe {
 };
 
 enum procstate { UNUSED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
-
+#include "spinlock.h"
 // Per-process state
 struct proc {
   struct spinlock lock;
